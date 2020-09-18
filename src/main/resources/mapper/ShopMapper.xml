@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.fpb.mapper.ShopMapper">
+    <resultMap id="BaseResultMap" type="com.mt.fpb.model.Shop">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="shop_name" property="shopName" jdbcType="VARCHAR"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="shop_logo" property="shopLogo" jdbcType="VARCHAR"/>
+        <result column="shop_desc" property="shopDesc" jdbcType="VARCHAR"/>
+        <result column="lat" property="lat" jdbcType="VARCHAR"/>
+        <result column="lng" property="lng" jdbcType="VARCHAR"/>
+        <result column="charter_img" property="charterImg" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="foodBusiness" property="food_business" jdbcType="LONGVARCHAR"/>
+        <result column="qualified" property="qualified" jdbcType="LONGVARCHAR"/>
+        <result column="business_time" property="businessTime" jdbcType="TIMESTAMP"/>
+        <result column="qualified_time" property="qualifiedTime" jdbcType="TIMESTAMP"/>
+        <result column="contact" property="contact" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="shopGrade" resultType="com.mt.fpb.model.Shop">
+		SELECT
+		ttf.shopName ,ttf.deducts,ttf.rate
+		FROM
+		(
+		SELECT
+		tt. NAME shopName,tt.deductions deducts,
+		(
+		CASE
+		WHEN tt.deductions BETWEEN 0
+		AND 1 THEN 'A'
+
+		WHEN tt.deductions BETWEEN 1
+		AND 2.5 THEN 'B'
+
+		WHEN tt.deductions BETWEEN 2.6
+		AND 4 THEN 'C'
+
+		WHEN tt.deductions BETWEEN 4.1
+		AND 10 THEN 'D'
+
+		END
+		) as 'rate'
+		FROM
+		(
+
+		SELECT
+		count(t4.deductions) deductions,
+		t2.shop_name NAME
+		FROM
+		shop t2
+
+		LEFT JOIN violation t1  ON t2.id = t1.shop_id
+		LEFT JOIN event_content t4 on t4.id = t1.vio_type
+		LEFT JOIN event_type t3 on t4.pid = t3.id
+
+
+		GROUP BY
+		t2.id) tt)ttf
+
+		where 1=1
+		<if test="shopName != null and shopName !=''">
+			AND ttf.shopName  LIKE concat('%', #{shopName}, '%')
+		</if>
+
+		<if test="rate != null and rate !=''">
+			AND ttf.rate  LIKE concat('%', #{rate}, '%')
+		</if>
+
+  </select>
+
+    <select id="scoreSummary" resultType="map">
+        SELECT ttf.rate,COUNT(rate) rateNum FROM (
+SELECT
+	tt. NAME,tt.deductions,
+	(
+		CASE
+		WHEN tt.deductions BETWEEN 0
+		AND 1 THEN 'a'
+
+		WHEN tt.deductions BETWEEN 1
+		AND 2 THEN 'b'
+
+		WHEN tt.deductions BETWEEN 3
+		AND 4 THEN 'c'
+
+		END
+	 ) AS 'rate'
+FROM
+	(
+		SELECT
+			COUNT(t1.deductions) deductions,
+			t2.shop_name NAME
+		FROM
+			violation t1
+		LEFT JOIN shop t2 ON t2.id = t1.shop_id
+		GROUP BY
+			t1.shop_id
+	) tt
+) ttf
+GROUP BY ttf.rate
+    </select>
+
+    <select id="violationSummary" resultType="map">
+			SELECT COUNT(t1.vio_desc) number,t1.vio_desc vioDesc
+	FROM violation t1 GROUP BY t1.vio_desc
+
+	</select>
+	<!--统计商家所有数量-->
+	<select id="findAllShop" resultType="int">
+		select count(*) from shop
+	</select>
+
+	<!--每个等级的商家个数展示-->
+	<select id="findGradeNum" resultType="map">
+		SELECT ttf.rate rate,count(rate) rateNum FROM (
+
+SELECT
+	tt. NAME,tt.deductions,
+	(
+		CASE
+		WHEN tt.deductions BETWEEN 0
+		AND 1 THEN 'a'
+
+		WHEN tt.deductions is null THEN 'a'
+
+		WHEN tt.deductions BETWEEN 1
+		AND 2.5 THEN 'b'
+
+		WHEN tt.deductions BETWEEN 2.6
+		AND 4 THEN 'c'
+
+		WHEN tt.deductions BETWEEN 4.1
+		AND 10 THEN 'd'
+
+		END
+	 ) as 'rate'
+FROM
+(
+
+SELECT
+			count(t4.deductions) deductions,
+			t2.shop_name NAME
+		FROM
+			shop t2
+
+		LEFT JOIN violation t1 ON t2.id = t1.shop_id
+		LEFT JOIN event_content t4 on t4.id = t1.vio_type
+		LEFT JOIN event_type t3 on t4.pid = t3.id
+		GROUP BY
+			t2.id) tt
+)ttf
+GROUP BY ttf.rate
+
+	</select>
+
+	<select id="findList" resultType="com.mt.fpb.model.Shop">
+		SELECT
+
+t1.id,
+t1.add_time addTime,
+t1.business_time businessTime,
+t1.charter_img charterImg,
+t1.contact contact,
+t1.food_business foodBusiness,
+t1.phone phone,
+t1.qualified qualified,
+t1.qualified_time qualifiedTime,
+t1.shop_desc shopDesc,
+t1.shop_logo shopLogo,
+t1.shop_name shopName,
+t1.status status,
+t1.address address,
+t2.area_name areaName,
+		t1.lat lat,
+		t1.lng lng,
+		t1.video video
+FROM shop t1
+LEFT JOIN area t2 on t1.area_id = t2.id
+WHERE 1=1
+		<if test="shopName != null and shopName !=''">
+			AND t1.shop_name  LIKE concat('%', #{shopName}, '%')
+		</if>
+		<if test="areaName != null and areaName !=''">
+			AND t2.area_name  LIKE concat('%', #{areaName}, '%')
+		</if>
+	</select>
+</mapper>

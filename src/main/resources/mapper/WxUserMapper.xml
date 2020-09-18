@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.fpb.mapper.WxUserMapper">
+
+    <select id="selectAllSchool" resultType="com.mt.fpb.model.School">
+      SELECT
+        t1.id,
+        t1.address,
+        t1.logo_img logoImg,
+        t2.user_name name,
+        t1.user_id userId,
+        t1.video_address videoAddress
+
+      FROM school t1
+      LEFT JOIN   sys_user t2   ON  t1.user_id = t2.id
+    </select>
+</mapper>

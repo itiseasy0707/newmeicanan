@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.fpb.mapper.BtmdLandryMapper" >
+  <select id="getOwnLocation" resultType="int">
+    SELECT count(*) FROM btmd_landry WHERE add_time  <![CDATA[ < ]]>
+(
+SELECT
+	max(add_time)
+FROM
+	btmd_landry
+WHERE
+	STATUS = #{status} and type = #{type} and car_number = #{carNumber}
+
+)  AND  type = #{type} AND add_time >= date_format(#{ownTime},'%Y-%m-%d 00:00:00') AND  status = #{status}
+ </select>
+
+
+    <select id="getOwnStatus" resultType="java.lang.String">
+        SELECT status,max(add_time) FROM btmd_landry WHERE type = #{type} AND car_number = #{carNumber}
+    </select>
+
+
+    <select id="getOwnNumber" resultType="int">
+        SELECT count(*) FROM btmd_landry WHERE add_time  <![CDATA[ < ]]>
+        (
+        SELECT
+        max(add_time)
+        FROM
+        btmd_landry
+        WHERE
+         type = #{type} and car_number = #{carNumber}
+
+        )  AND  type = #{type} AND add_time >= date_format(#{ownTime},'%Y-%m-%d 00:00:00')
+    </select>
+
+    <select id="getOwnTime" resultType="java.lang.String">
+        SELECT
+	max(add_time) ownTime
+FROM
+	btmd_landry
+WHERE
+	STATUS = #{status} and type = #{type} and car_number = #{carNumber} AND date_format(add_time,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d')
+    </select>
+
+    <select id="find" resultType="int">
+      SELECT count(*)
+       FROM btmd_landry t1
+        LEFT  JOIN  btmd t2 ON  t1.type = t2.id
+        where t1.car_number = #{carNumber} AND t1.type = #{type} AND t1.status = "0"
+    </select>
+
+    <select id="getCarList" resultType="com.mt.fpb.model.BtmdLandry">
+        SELECT t1.id,t1.car_number carNumber,t1.type,t1.status,t1.add_time addTime,t2.name,t1.phone phone
+        FROM btmd_landry t1
+        LEFT  JOIN  btmd t2 ON  t1.type = t2.id
+        where 1=1
+        <if test="carNumber != null and carNumber !=''">
+            AND t1.car_number LIKE concat('%', #{carNumber}, '%')
+        </if>
+        <if test="beginTime != null and beginTime !=''">
+            AND add_time  >= #{beginTime}
+        </if>
+        <if test="endTime != null and endTime !=''">
+            AND #{endTime}  >= add_time
+        </if>
+        <if test="type != null and type !=''">
+            AND t1.type = #{type}
+        </if>
+        <if test="status != null and status !=''">
+            AND t1.status = #{status}
+        </if>
+
+        ORDER BY  t1.add_time DESC 
+
+    </select>
+</mapper>

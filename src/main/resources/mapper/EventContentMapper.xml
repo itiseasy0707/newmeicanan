@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.fpb.mapper.EventContentMapper">
+
+    <select id="selectAllVio" resultType="com.mt.fpb.model.EventContent">
+         SELECT
+t1.content_name contentName,
+t1.deductions deductions,
+t1.id id,
+t1.pid pid,
+t2.event_name eventName
+
+FROM event_content t1
+LEFT JOIN event_type t2 on t1.pid = t2.id
+    </select>
+
+<!--根据id获取 到所有的小类信息-->
+    <select id="getByIdLargeId" resultType="com.mt.fpb.model.EventContent">
+SELECT
+t1.id id,
+t1.content_name contentName,
+t1.deductions deductions,
+t1.pid pid
+FROM event_content t1
+WHERE t1.pid = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mt.fpb.mapper.ViolationMapper">
+    <resultMap id="BaseResultMap" type="com.mt.fpb.model.Violation">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="shop_id" property="shopId" jdbcType="INTEGER"/>
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP"/>
+        <result column="vio_img" property="vioImg" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="deductions" property="deductions" jdbcType="INTEGER"/>
+        <result column="vio_desc" property="vioDesc" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="findAll" resultType="map">
+        SELECT
+        v.`id`,
+        v.`shop_id` shopId,
+        v.`vio_desc` vioDesc,
+        v.`add_time` `addTime`,
+        v.`vio_img` vioImg,
+        v.`status`,
+        v.`type`,
+        v.`deductions`,
+        v.vio_type vioType,
+        s.`shop_name` shopName,
+
+        t3.content_name contentName,
+        t4.event_name eventName
+        FROM violation v
+        LEFT JOIN shop s ON v.`shop_id` = s.`id`
+        LEFT  JOIN  event_content t3 on v.vio_type = t3.id
+        LEFT  JOIN event_type t4 on t3.pid = t4.id
+        WHERE  1=1
+        <if test="shopName != null and shopName !=''">
+            and s.shop_name LIKE concat('%', #{shopName}, '%')
+        </if>
+
+    </select>
+
+    <select id="findOne" resultType="map">
+        SELECT
+        v.`id`,
+        v.`shop_id` shopId,
+        v.`vio_desc` vioDesc,
+        v.`add_time` `addTime`,
+        v.`vio_img` vioImg,
+        v.`status`,
+        v.`type`,
+        v.`deductions`,
+        s.`shop_name` shopName
+        FROM violation v JOIN shop s ON v.`shop_id` = s.`id`
+        <if test="id != null and id !=''">
+            where v.id = #{id}
+        </if>
+    </select>
+
+    <select id="warning" resultType="map">
+SELECT
+	count(t1.shop_id) deductions,
+	t2.shop_name shopName
+
+FROM
+	violation t1
+LEFT JOIN shop t2 on t2.id = t1.shop_id
+GROUP BY
+	t1.shop_id
+HAVING
+	deductions = 5
+OR deductions = 10
+
+    </select>
+
+
+    <select id="warningList" resultType="map">
+        SELECT
+        count(t1.shop_id) deductions,
+        t2.shop_name shopName
+
+        FROM
+        violation t1
+        LEFT JOIN shop t2 on t2.id = t1.shop_id
+        GROUP BY
+        t1.shop_id
+        HAVING
+        deductions >= 5
+
+    </select>
+
+    <select id="expire" resultType="com.mt.fpb.model.Shop">
+  SELECT
+   s.`id`,
+  s.`shop_name` shopName ,
+  s.`add_time` `addTime` ,
+  s.`status`,
+  s.`address`,
+  s.`phone`,
+  s.`shop_logo` shopLogo,
+  s.`shop_desc` shopDesc,
+  s.`lat`,
+  s.`lng`,
+  s.`charter_img` charterImg,
+  s.`type`,
+  s.`food_business` foodBusiness,
+  s.`qualified`,
+  s.`business_time` businessTime,
+  s.`qualified_time` qualifiedTime,
+  s.`contact`
+         FROM shop s WHERE  DATEDIFF(s.`business_time`,NOW()) <![CDATA[ <= ]]> 30 OR DATEDIFF(s.`qualified_time`,NOW()) <![CDATA[ <= ]]> 30
+    </select>
+
+
+    <!--统计违规所有数量-->
+    <select id="findAllVios" resultType="int">
+		select count(*) from violation
+	</select>
+
+    <!--违规类型（每种违规类型的个数统计）-->
+    <select id="findAllVioTypeNum" resultType="map">
+
+
+SELECT
+	count(t3.id) nums,
+	t3.event_name eventName
+FROM
+	violation t1
+LEFT JOIN event_content t2 on t1.vio_type = t2.id
+LEFT JOIN event_type t3 on t3.id = t2.pid
+GROUP BY
+	t2.pid
+
+    </select>
+
+    <select id="findQuarterNum" resultType="map">
+        SELECT
+        COUNT(t1.shop_id) vioNums,
+        QUARTER (t1.add_time) quarter
+        FROM
+        violation t1
+        WHERE
+        YEAR (now()) = YEAR (t1.add_time)
+        GROUP BY
+        QUARTER (t1.add_time)
+    </select>
+
+
+
+    <select id="findMonthNum" resultType="map">
+        SELECT
+        COUNT(t1.shop_id) vioNums,
+        MONTH(t1.add_time) month
+        FROM
+        violation t1
+        WHERE
+        YEAR (now()) = YEAR (t1.add_time)
+        GROUP BY
+        MONTH(t1.add_time)
+    </select>
+
+    <select id="findDayVioNum" resultType="int">
+        SELECT
+	count(*) nums
+FROM
+	violation
+WHERE
+	DAY (add_time) = DAY (now())
+    </select>
+</mapper>
