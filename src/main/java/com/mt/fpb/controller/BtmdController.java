@@ -1,5 +1,6 @@
 package com.mt.fpb.controller;
 
+import cn.hutool.core.util.IdUtil;
 import com.mt.fpb.mapper.BtmdMapper;
 import com.mt.fpb.model.Btmd;
 import com.mt.fpb.model.vo.CommonResult;
@@ -7,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
-
-import java.io.Serializable;
 import java.util.List;
 
 
@@ -30,21 +29,21 @@ public class BtmdController {
     @GetMapping("/list")
     public CommonResult list(){
         List<Btmd> list = btmdMapper.selectAll();
-        return CommonResult.success(CommonResult.success(list) );
+        return CommonResult.success(CommonResult.success(list));
     }
 
     /**
      * 根据主键id查询门店信息
-     * @param id 主键
+     * @param btmd 主键实体
      * @return 返回单条门店对象
      */
-    @GetMapping("/findById/{id}")
-    public CommonResult findById(@PathVariable Serializable id){
-        if (StringUtils.isEmpty(id)) {
+    @GetMapping("/getById")
+    public CommonResult getById(Btmd btmd){
+        if (StringUtils.isEmpty(btmd.getId())) {
             return CommonResult.fail(-1, "id不能为空");
         }
-        Btmd btmd = btmdMapper.selectByPrimaryKey(id);
-        return CommonResult.success(CommonResult.success(btmd) );
+        Btmd bt = btmdMapper.selectOne(btmd);
+        return CommonResult.success(CommonResult.success(bt) );
     }
 
     /**
@@ -69,20 +68,21 @@ public class BtmdController {
      * @param btmd 门店对象
      * @return 添加结果
      */
-    @PostMapping("/insert")
-    public CommonResult insert(@RequestBody Btmd btmd){
-       //TODO 校验实体对象(非空)，数据库表主键id未自增
+    @PostMapping("/add")
+    public CommonResult add(@RequestBody Btmd btmd){
+       //TODO 校验实体对象(非空)
 
+        btmd.setId(IdUtil.simpleUUID());
         btmdMapper.insert(btmd);
         return CommonResult.success(1);
     }
 
-    @PostMapping("/del/{id}")
-    public CommonResult delete(@PathVariable Serializable id) {
-        if (StringUtils.isEmpty(id)) {
+    @DeleteMapping("/delete")
+    public CommonResult delete(@RequestBody Btmd btmd) {
+        if (StringUtils.isEmpty(btmd.getId())) {
             return CommonResult.fail(-1, "id不能为空");
         }
-        btmdMapper.deleteByPrimaryKey(id);
+        btmdMapper.delete(btmd);
         return CommonResult.success(1);
     }
 }
