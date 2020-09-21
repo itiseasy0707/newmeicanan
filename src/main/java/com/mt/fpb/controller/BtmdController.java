@@ -15,7 +15,6 @@ import java.util.List;
  * 备胎门店管理
  */
 @RestController
-//@CrossOrigin
 @RequestMapping("/btmdController")
 public class BtmdController {
 
