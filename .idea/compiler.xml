@@ -7,13 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="choujiang" />
-        <module name="financial" />
-        <module name="fpb" />
         <module name="mcafg" />
         <module name="MCAJG" />
-        <module name="mzjchoujiang" />
         <module name="schoolYiQi" />
+        <module name="financial" />
         <module name="yiqing" />
+        <module name="fpb" />
+        <module name="mzjchoujiang" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
