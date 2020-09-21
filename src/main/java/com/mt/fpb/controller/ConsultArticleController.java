@@ -12,10 +12,8 @@ import com.mt.fpb.model.vo.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -29,14 +27,13 @@ public class ConsultArticleController {
     private ConsultArticleMapper consultArticleMapper;
 
 
-
     /**
      * 文章列表
      * @param queryParams 分页参数
      * @return
      */
     @GetMapping("/list")
-    public CommonResult list(@RequestBody BaseQueryParams queryParams){
+    public CommonResult list(BaseQueryParams queryParams){
         PageHelper.startPage(queryParams.getPage(),queryParams.getPageSize());
         List<ConsultArticle> list = consultArticleMapper.selectAll();
         return CommonResult.success(CommonPage.restPage(list));
@@ -48,7 +45,7 @@ public class ConsultArticleController {
      * @return
      */
     @GetMapping("/getById")
-    public CommonResult getById(@RequestBody ConsultArticle consultArticle){
+    public CommonResult getById(ConsultArticle consultArticle){
         if (StringUtils.isEmpty(consultArticle.getId())) {
             return CommonResult.fail(-1, "id不能为空");
         }
