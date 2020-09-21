@@ -2,6 +2,8 @@ package com.mt.fpb.model;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.List;
 
 public class School {
     /**
@@ -38,6 +40,74 @@ public class School {
      */
     @Column(name = "video_address")
     private String videoAddress;
+
+    private String lat;
+
+    private String lng;
+    @Transient
+    private List<SchoolEmployee> schoolEmployeeList;
+    @Transient
+    private List<SchoolDishes> schoolDishesList;
+
+    /**
+     * 学校联系人
+     */
+    @Column(name = "school_person")
+    private String schoolPerson;
+    /**
+     * 联系人手机号码
+     */
+    @Column(name = "person_phone")
+    private String personPhone;
+
+    public List<SchoolDishes> getSchoolDishesList() {
+        return schoolDishesList;
+    }
+
+    public void setSchoolDishesList(List<SchoolDishes> schoolDishesList) {
+        this.schoolDishesList = schoolDishesList;
+    }
+
+    public List<SchoolEmployee> getSchoolEmployeeList() {
+        return schoolEmployeeList;
+    }
+
+    public void setSchoolEmployeeList(List<SchoolEmployee> schoolEmployeeList) {
+        this.schoolEmployeeList = schoolEmployeeList;
+    }
+
+    public String getSchoolPerson() {
+        return schoolPerson;
+    }
+
+    public void setSchoolPerson(String schoolPerson) {
+        this.schoolPerson = schoolPerson;
+    }
+
+    public String getPersonPhone() {
+        return personPhone;
+    }
+
+    public void setPersonPhone(String personPhone) {
+        this.personPhone = personPhone;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
     /**
      * 获取主键
      *
@@ -111,7 +181,6 @@ public class School {
 
     /**
      * 获取logo原地址
-
      *
      * @return logo_img - logo原地址
      */
