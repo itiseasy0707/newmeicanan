@@ -1,10 +1,7 @@
 package com.mt.fpb.controller;
 
-import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageHelper;
-import com.mt.fpb.common.util.FileUtil;
 import com.mt.fpb.mapper.ConsultArticleMapper;
-import com.mt.fpb.model.ConsultArticle;
 import com.mt.fpb.model.ConsultArticle;
 import com.mt.fpb.model.dto.BaseQueryParams;
 import com.mt.fpb.model.vo.CommonPage;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
-
 import java.util.List;
 
 /**
@@ -25,7 +21,6 @@ public class ConsultArticleController {
 
     @Autowired
     private ConsultArticleMapper consultArticleMapper;
-
 
     /**
      * 文章列表
@@ -87,7 +82,7 @@ public class ConsultArticleController {
      * @return
      */
     @DeleteMapping("/delete")
-    public CommonResult delete(@RequestBody ConsultArticle consultArticle) {
+    public CommonResult delete(ConsultArticle consultArticle) {
         if (StringUtils.isEmpty(consultArticle.getId())) {
             return CommonResult.fail(-1, "id不能为空");
         }

@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *  备胎门店
+ *  备胎客户
  */
 @RestController
 @RequestMapping("/btmdCarData")
