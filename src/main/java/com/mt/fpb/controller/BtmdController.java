@@ -1,9 +1,14 @@
 package com.mt.fpb.controller;
 
 import cn.hutool.core.util.IdUtil;
+import com.github.pagehelper.PageHelper;
 import com.mt.fpb.mapper.BtmdMapper;
 import com.mt.fpb.model.Btmd;
+import com.mt.fpb.model.dto.BaseQueryParams;
+import com.mt.fpb.model.vo.CommonPage;
 import com.mt.fpb.model.vo.CommonResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/btmdController")
+@Api(value = "备胎门店管理",description = "备胎门店管理描述")
 public class BtmdController {
 
     @Autowired
@@ -25,10 +31,12 @@ public class BtmdController {
      * 查询所有门店
      * @return 所有门店
      */
+    @ApiOperation("所有门店")
     @GetMapping("/list")
-    public CommonResult list(){
+    public CommonResult list(BaseQueryParams queryParams){
+        PageHelper.startPage(queryParams.getPage(),queryParams.getPageSize());
         List<Btmd> list = btmdMapper.selectAll();
-        return CommonResult.success(CommonResult.success(list));
+        return CommonResult.success(CommonPage.restPage(list));
     }
 
     /**
@@ -77,7 +85,7 @@ public class BtmdController {
     }
 
     @DeleteMapping("/delete")
-    public CommonResult delete(@RequestBody Btmd btmd) {
+    public CommonResult delete(Btmd btmd) {
         if (StringUtils.isEmpty(btmd.getId())) {
             return CommonResult.fail(-1, "id不能为空");
         }
