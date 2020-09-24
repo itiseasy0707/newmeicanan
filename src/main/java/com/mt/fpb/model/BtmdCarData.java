@@ -1,5 +1,8 @@
 package com.mt.fpb.model;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,45 +14,53 @@ public class BtmdCarData {
      * 主键
      */
     @Id
+    @ExcelIgnore
     private Integer id;
 
     /**
      * 用户名称
      */
+    @ExcelProperty(index = 0,value = "用户名称")
     private String name;
 
     /**
      * 车牌号
      */
+    @ExcelProperty(index = 1,value = "车牌号")
     @Column(name = "car_number")
     private String carNumber;
 
     /**
      * 车型
      */
+    @ExcelProperty(index = 2,value = "车型")
     @Column(name = "car_shape")
     private String carShape;
 
     /**
      * 电话号码
      */
+    @ExcelProperty(index = 3,value = "电话号码")
     private String phone;
 
     /**
      * 生日
      */
-    private Date birthday;
+    @ExcelProperty(index = 4,value = "生日")
+    private String birthday;
 
     /**
      * 车架号
      */
     @Column(name = "car_shelf")
+    @ExcelProperty(index = 5,value = "车架号")
     private String carShelf;
 
     /**
      * 行驶证号
      */
     @Column(name = "license_number")
+    @ExcelProperty(index = 6,value = "行驶证号")
     private String licenseNumber;
 
     /**
@@ -147,7 +158,7 @@ public class BtmdCarData {
      *
      * @return birthday - 生日
      */
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
@@ -156,7 +167,7 @@ public class BtmdCarData {
      *
      * @param birthday 生日
      */
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 

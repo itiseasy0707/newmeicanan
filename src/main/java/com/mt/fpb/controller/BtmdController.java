@@ -2,6 +2,7 @@ package com.mt.fpb.controller;
 
 import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageHelper;
+import com.mt.fpb.common.config.UserLoginToken;
 import com.mt.fpb.mapper.BtmdMapper;
 import com.mt.fpb.model.Btmd;
 import com.mt.fpb.model.dto.BaseQueryParams;
@@ -50,7 +51,7 @@ public class BtmdController {
             return CommonResult.fail(-1, "id不能为空");
         }
         Btmd bt = btmdMapper.selectOne(btmd);
-        return CommonResult.success(CommonResult.success(bt) );
+        return CommonResult.success(bt);
     }
 
     /**
@@ -84,12 +85,12 @@ public class BtmdController {
         return CommonResult.success(1);
     }
 
-    @DeleteMapping("/delete")
-    public CommonResult delete(Btmd btmd) {
-        if (StringUtils.isEmpty(btmd.getId())) {
+    @DeleteMapping("/delete/{id}")
+    public CommonResult delete(@PathVariable("id") String id) {
+        if (StringUtils.isEmpty(id)) {
             return CommonResult.fail(-1, "id不能为空");
         }
-        btmdMapper.delete(btmd);
+        btmdMapper.deleteByPrimaryKey(id);
         return CommonResult.success(1);
     }
 }

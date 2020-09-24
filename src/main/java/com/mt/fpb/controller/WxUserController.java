@@ -80,11 +80,4 @@ public class WxUserController {
         }
         return CommonResult.success(schoolDishesMapper.selectOne(schoolDishes));
     }
-
-
-
-
-
-
-
 }

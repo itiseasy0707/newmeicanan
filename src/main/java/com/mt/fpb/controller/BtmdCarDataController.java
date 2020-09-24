@@ -1,18 +1,22 @@
 package com.mt.fpb.controller;
 
+import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageHelper;
-import com.mt.fpb.mapper.AreaMapper;
+import com.mt.fpb.common.listener.EasyExcelListener;
 import com.mt.fpb.mapper.BtmdCarDataMapper;
-import com.mt.fpb.model.Area;
 import com.mt.fpb.model.BtmdCarData;
 import com.mt.fpb.model.dto.BaseQueryParams;
 import com.mt.fpb.model.vo.CommonPage;
 import com.mt.fpb.model.vo.CommonResult;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -24,7 +28,8 @@ public class BtmdCarDataController {
 
     @Resource
     private BtmdCarDataMapper btmdCarDataMapper;
-
+    @Value("${system.upload.filePath}")
+    private String uploadUrl;
 
     /**
      *  列表
@@ -93,21 +98,42 @@ public class BtmdCarDataController {
     /**
      * 删除
      *
-     * @param btmdCarData
+     * @param
      * @return
      */
-    @PostMapping("delete")
-    public CommonResult delete(@RequestBody BtmdCarData btmdCarData) {
-        if (StringUtils.isEmpty(btmdCarData.getId())) {
+    @DeleteMapping("delete/{id}")
+    public CommonResult delete(@PathVariable("id") String id) {
+        if (StringUtils.isEmpty(id)) {
             return CommonResult.fail(-1, "id不能为空");
         }
-        btmdCarDataMapper.delete(btmdCarData);
+        btmdCarDataMapper.deleteByPrimaryKey(id);
         return CommonResult.success(1);
     }
 
 
+    @PostMapping("/excelImport")
+    public CommonResult excelImport(MultipartFile file){
+        if (StringUtils.isEmpty(file)){
+            CommonResult.fail(-1,"文件不能为空!");
+        }
+        try {
+            InputStream inputStream = file.getInputStream();
+            EasyExcel.read(inputStream,BtmdCarData.class,new EasyExcelListener(btmdCarDataMapper)).sheet().doRead();
+            return CommonResult.success(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return CommonResult.fail(-1, "导入错误!");
+    }
 
-
-
-
+    @PostMapping("/excelExport")
+    public CommonResult excelExport(){
+        try {
+           EasyExcel.write(uploadUrl+"/btmdCarData.xlsx",BtmdCarData.class).sheet("备胎客户").doWrite(btmdCarDataMapper.selectAll());
+            return CommonResult.success(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CommonResult.fail(-1, "导入错误!");
+    }
 }

@@ -28,7 +28,6 @@ public class UserController {
 
     /**
      * 小程序登录
-     *
      * @return
      */
     @GetMapping("login")
