@@ -2,6 +2,10 @@ package com.mt.fpb.model;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.annotation.write.style.HeadStyle;
+import com.alibaba.excel.metadata.BaseRowModel;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -9,7 +13,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Table(name = "btmd_car_data")
-public class BtmdCarData {
+public class BtmdCarData extends BaseRowModel {
     /**
      * 主键
      */

@@ -3,6 +3,8 @@ package com.mt.fpb.controller;
 import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageHelper;
 import com.mt.fpb.common.listener.EasyExcelListener;
+import com.mt.fpb.common.util.EasyExcelUtils;
+import com.mt.fpb.common.util.MyExcelUtil;
 import com.mt.fpb.mapper.BtmdCarDataMapper;
 import com.mt.fpb.model.BtmdCarData;
 import com.mt.fpb.model.dto.BaseQueryParams;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -38,10 +41,13 @@ public class BtmdCarDataController {
      * @return
      */
     @GetMapping("list")
-    public CommonResult list(BaseQueryParams queryParams) {
+    public CommonResult list(BaseQueryParams queryParams,BtmdCarData btmdCarData) {
         PageHelper.startPage(queryParams.getPage(), queryParams.getPageSize());
-
-        List<BtmdCarData> list = btmdCarDataMapper.selectAll();
+        Example example = new Example(BtmdCarData.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andLike("name", "%"+btmdCarData.getName()+"%");
+        List<BtmdCarData> list = btmdCarDataMapper.selectByExample(example);
+        System.out.println(list);
         return CommonResult.success(CommonPage.restPage(list));
     }
 
@@ -126,14 +132,16 @@ public class BtmdCarDataController {
         return CommonResult.fail(-1, "导入错误!");
     }
 
-    @PostMapping("/excelExport")
-    public CommonResult excelExport(){
+    @GetMapping("/excelExport")
+    public void excelExport(HttpServletResponse response) {
+        List<BtmdCarData> list = btmdCarDataMapper.selectAll();
+        String[] headArr = {"name","carNumber","carShape","phone","birthday","carShelf","licenseNumber"};
+        String[] headArrAlias = {"用户名称","车牌号","车型","电话号码","生日","车架号","行驶证号"};
+
         try {
-           EasyExcel.write(uploadUrl+"/btmdCarData.xlsx",BtmdCarData.class).sheet("备胎客户").doWrite(btmdCarDataMapper.selectAll());
-            return CommonResult.success(1);
+            MyExcelUtil.getExcel(response, list, "备胎车服客户信息.xlsx",headArr, headArrAlias);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return CommonResult.fail(-1, "导入错误!");
     }
 }

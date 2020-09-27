@@ -3,7 +3,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/newmeicanan?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://39.106.127.141:3306:3306/newmeicanan?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=GMT%2B8
     username: newmeicanan
     password: wFyLrfZR8nYerR67
     druid:
