@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mt.fpb.mapper.ShOldManMapper">
+
+    <resultMap type="com.mt.fpb.model.ShOldMan" id="ShOldManMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="permanentAddress" column="Permanent_address" jdbcType="VARCHAR"/>
+        <result property="occupation" column="occupation" jdbcType="VARCHAR"/>
+        <result property="workUnit" column="Work_unit" jdbcType="VARCHAR"/>
+        <result property="degreeEdu" column="degree_edu" jdbcType="VARCHAR"/>
+        <result property="date" column="date" jdbcType="TIMESTAMP"/>
+        <result property="payStyle" column="pay_style" jdbcType="VARCHAR"/>
+        <result property="emergencyName" column="emergency_name" jdbcType="VARCHAR"/>
+        <result property="emergencyTel" column="emergency_tel" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+</mapper>

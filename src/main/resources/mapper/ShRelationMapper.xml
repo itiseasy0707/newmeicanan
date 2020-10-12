@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mt.fpb.mapper.ShRelationMapper">
+
+    <resultMap type="com.mt.fpb.model.ShRelation" id="ShRelationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="INTEGER"/>
+        <result property="tel" column="tel" jdbcType="VARCHAR"/>
+        <result property="permanentAddress" column="Permanent_address" jdbcType="VARCHAR"/>
+        <result property="relation" column="relation" jdbcType="VARCHAR"/>
+        <result property="oldmanId" column="oldMan_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+</mapper>
