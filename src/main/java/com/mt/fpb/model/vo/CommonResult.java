@@ -54,6 +54,7 @@ public class CommonResult<T> {
         return new CommonResult<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMsg(), data);
     }
 
+
     /**
      * 操作失败返回结果
      *

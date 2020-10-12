@@ -45,7 +45,7 @@ public class BtmdCarDataController {
         PageHelper.startPage(queryParams.getPage(), queryParams.getPageSize());
         Example example = new Example(BtmdCarData.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andLike("name", "%"+btmdCarData.getName()+"%");
+        criteria.andLike("carNumber", "%"+btmdCarData.getCarNumber()+"%");
         List<BtmdCarData> list = btmdCarDataMapper.selectByExample(example);
         System.out.println(list);
         return CommonResult.success(CommonPage.restPage(list));
