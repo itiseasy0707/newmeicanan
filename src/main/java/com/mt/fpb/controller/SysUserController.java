@@ -10,10 +10,7 @@ import com.mt.fpb.mapper.RoleUserMapper;
 import com.mt.fpb.mapper.SchoolMapper;
 import com.mt.fpb.mapper.SysRoleMapper;
 import com.mt.fpb.mapper.SysUserMapper;
-import com.mt.fpb.model.RoleUser;
-import com.mt.fpb.model.School;
-import com.mt.fpb.model.SysRole;
-import com.mt.fpb.model.SysUser;
+import com.mt.fpb.model.*;
 import com.mt.fpb.model.dto.BaseQueryParams;
 import com.mt.fpb.model.vo.CommonPage;
 import com.mt.fpb.model.vo.CommonResult;
@@ -149,6 +146,17 @@ public class SysUserController {
             school.setName(userName);
             school.setUserId(userId02);
             schoolMapper.insert(school);
+        }
+
+        if(roleType.equals("3")){ // 水西颐养之家管理员
+            // 新增信息到水西颐养之家表中
+//            String userName = sysUser.getUserName();
+            Integer userId02 = sysUser.getId();
+            SxHome sxHome = new SxHome();
+//            school.setName(userName);
+            sxHome.setUserId(userId02);
+            // 新增到水西颐养之家表中
+//            schoolMapper.insert(school);
         }
         return CommonResult.success(1);
     }
