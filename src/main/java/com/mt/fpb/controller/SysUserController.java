@@ -6,6 +6,7 @@ import com.auth0.jwt.JWT;
 import com.github.pagehelper.PageHelper;
 import com.mt.fpb.common.util.GetToken;
 import com.mt.fpb.common.util.RedisUtil;
+import com.mt.fpb.model.SxHome;
 import com.mt.fpb.mapper.RoleUserMapper;
 import com.mt.fpb.mapper.SchoolMapper;
 import com.mt.fpb.mapper.SysRoleMapper;
@@ -49,8 +50,8 @@ public class SysUserController {
      */
     @PostMapping("login")
     public CommonResult login(@RequestBody SysUser sysUser) {
-      String name =   sysUser.getLoginName();
-      String pass = sysUser.getPassword();
+        String name = sysUser.getLoginName();
+        String pass = sysUser.getPassword();
         System.err.println("调用  login  接口-----------------参数" + sysUser.getLoginName() + "-----------" + sysUser.getPassword());
         if (StrUtil.isBlank(sysUser.getLoginName()) || StrUtil.isBlank(sysUser.getPassword())) {
             return CommonResult.fail(-1, "用户名或密码错误");
@@ -87,7 +88,7 @@ public class SysUserController {
             JSONObject json = new JSONObject();
             json.put("user", user);
             json.put("menu", menu);
-            json.put("userId",userId);
+            json.put("userId", userId);
             return CommonResult.success(json);
 
         }
@@ -132,32 +133,42 @@ public class SysUserController {
         roleUser.setRoleId(sysUser.getRoleId());
         roleUserMapper.insert(roleUser);
 
-       Integer roleTemp =  sysUser.getRoleId();
+        Integer roleTemp = sysUser.getRoleId();
         Example exampleTemp = new Example(SysRole.class);
         Example.Criteria criteriaTemp = exampleTemp.createCriteria();
         criteriaTemp.andEqualTo("id", roleTemp);
         SysRole sysRole = sysRoleMapper.selectOneByExample(exampleTemp);
         String roleType = sysRole.getRoleType();
-        if(roleType.equals("1")){ // 学校管理员
-            // 新增信息到学校表中
-            String userName = sysUser.getUserName();
-            Integer userId02 = sysUser.getId();
-            School school = new School();
-            school.setName(userName);
-            school.setUserId(userId02);
-            schoolMapper.insert(school);
+        switch (roleType) {
+            case "1"://学校管理员
+                // 新增信息到学校表中
+                School school = new School();
+                school.setName(sysUser.getUserName());
+                school.setUserId(sysUser.getId());
+                schoolMapper.insert(school);
+                break;
+            case "3"://水西颐养之家
+                // 新增信息到水西颐养之家表中
+                SxHome sxHome = new SxHome();
+                sxHome.setName(sysUser.getUserName());
+                sxHome.setUserId(sysUser.getId());
+                break;
         }
-
-        if(roleType.equals("3")){ // 水西颐养之家管理员
-            // 新增信息到水西颐养之家表中
+//        if(roleType.equals("3")){ // 水西颐养之家管理员
+//            // 新增信息到水西颐养之家表中
+//            Integer userId02 = sysUser.getId();
+//            SxHome sxHome = new SxHome();
+//            sxHome.setUserId(userId02);
+//        }
+//        if (roleType.equals("1")) { // 学校管理员
+//            // 新增信息到学校表中
 //            String userName = sysUser.getUserName();
-            Integer userId02 = sysUser.getId();
-            SxHome sxHome = new SxHome();
+//            Integer userId02 = sysUser.getId();
+//            School school = new School();
 //            school.setName(userName);
-            sxHome.setUserId(userId02);
-            // 新增到水西颐养之家表中
+//            school.setUserId(userId02);
 //            schoolMapper.insert(school);
-        }
+//        }
         return CommonResult.success(1);
     }
 
